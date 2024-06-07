@@ -13,7 +13,7 @@ import { FireModels } from "../Server/models/user.js";
 const app =express()
 app.use(express.json())
 app.use(cors({
-    origin:["http://localhost:5174"],
+    origin:["http://localhost:5174","https://firescrim.onrender.com"],
     credentials:true
 }))
 app.use(cookieParser())
