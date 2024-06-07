@@ -6,8 +6,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import bodyParser from "body-parser";
 
-import {FireModel} from "../models/user.js"
-import { FireModels } from "../models/user.js";
+import {FireModel} from "./models/user.js"
+import { FireModels } from "./models/user.js";
 
 
 const app =express()
