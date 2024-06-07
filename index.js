@@ -11,11 +11,13 @@ import { FireModels } from "./models/user.js";
 
 
 const app =express()
+const corsOptions = {
+  origin: 'https://firescrim.netlify.app', // or use '*' to allow all origins
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
 app.use(express.json())
-app.use(cors({
-    origin:["http://localhost:5174","https://firescrim.netlify.app/"],
-    credentials:true
-}))
+app.use(cors(corsOptions));
 app.use(cookieParser())
 const secret = "Satya123";
 
