@@ -79,6 +79,8 @@ app.post("/payment" ,(req,res) => {
     .then (registration => res.json(registration))
     .catch(err => res.json(err))
 })
+
+
 app.get('/api/items', async (req, res) => {
     const cook = req.cookies.username;
 
@@ -99,15 +101,16 @@ app.get('/api/items', async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 });
-app.get('/items', async (req, res) => {
-    const cook = req.cookies.username;
 
-    console.log('Request received to /api/items');
-    console.log('Cookie:', cook);
+
+app.get('/items', async (req, res) => {
+    const cooks = req.cookies.username;
+
+    console.log('Cookie:', cooks);
 
 
     try {
-        const data = await FireModels.find({ username: cook });
+        const data = await FireModels.find({ username: cooks });
         if (!data) {
             console.log('User not found in the database');
             return res.status(404).send('User not found');
