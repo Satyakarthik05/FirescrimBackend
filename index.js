@@ -5,105 +5,105 @@ import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import bodyParser from "body-parser";
+import dotenv from "dotenv";
 
-import {FireModel} from "./models/user.js"
-import { FireModels } from "./models/user.js";
+import { FireModel, FireModels } from "./models/user.js";
 
+dotenv.config();
 
-const app =express()
+const app = express();
 const corsOptions = {
-  origin: [ 'https://firescrim.vercel.app','https://firescrim-frontend.vercel.app',"http://localhost:5173","http://localhost:5174","https://firescrim.netlify.app","https://test-umber-kappa-75.vercel.app"], // or use '*' to allow all origins
+  origin: ['https://firescrim.vercel.app', 'https://firescrim-frontend.vercel.app', "http://localhost:5173", "http://localhost:5174", "https://firescrim.netlify.app", "https://test-umber-kappa-75.vercel.app"],
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials:true,
+  credentials: true,
 };
-app.use(express.json())
+
+app.use(express.json());
 app.use(cors(corsOptions));
-app.options('*',cors(corsOptions));
-app.use(cookieParser())
-const secret = "Satya123";
+app.options('*', cors(corsOptions));
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
 
+const secret = process.env.JWT_SECRET || "defaultSecret";
+const mongoURI = process.env.MONGO_URI;
 
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch(err => console.error("Could not connect to MongoDB", err));
 
-mongoose.connect("mongodb+srv://satyakarthikvelivela:firescrim123@firescrim.wxzexrz.mongodb.net/registration?retryWrites=true&w=majority&appName=Firescrim")
-
-
-app.post('/register', (req,res)=> {
-    const {name,username,password,freefireid} =req.body;
-    const  user = FireModel.findOne({username:username})
-
-    .then(user => {
-        if(user){
-            res.json("user already exists")
-        }
-        else{
-            FireModel.create(req.body)
-            .then (registration => res.json(registration))
-            .catch(err => res.json(err)) 
-        }
-    })
-
-})
-app.post("/login", (req,res)=> {
-    const  {username,password} = req.body ;
-    const data =FireModel.findOne({username: username})
-    .then (user => {
-        if(user){
-            if(user.password === password ){
-                res.cookie('username', username ,{ httpOnly: true, secure: true, sameSite: 'None' ,maxAge:24*60*60*1000 });
-                const free = user.freefireid
-                console.log(free)
-                res.cookie('freefireid', free ,{maxAge:24*60*60*1000 });
-                console.log(req.cookies.username)
-                res.json("success")
-                
-            }
-            else {
-                res.json("the password is incorrect")
-            }
-        }
-        else{
-            res.json("no record exists")
-        } 
-        
-    })
-    
+app.post('/register', async (req, res) => {
+  const { name, username, password, freefireid } = req.body;
   
-})
-
-
-app.post("/payment" ,(req,res) => {
-    const {username,freefireid,upiid,status} =req.body;
-
-    FireModels.create(req.body)
-    .then (registration => res.json(registration))
-    .catch(err => res.json(err))
-})
-app.get('/api/items', async (req, res) => {
-    const cook = req.cookies.username;
-
-    console.log('Request received to /api/items');
-    console.log('Cookie:', cook);
-
-    if (!cook) {
-        console.log('No username cookie found');
-        return res.status(400).send('Username cookie not found');
+  try {
+    const existingUser = await FireModel.findOne({ username });
+    if (existingUser) {
+      return res.status(400).json("User already exists");
     }
 
-    try {
-        const data = await FireModels.find({ username: cook });
-        if (!data) {
-            console.log('User not found in the database');
-            return res.status(404).send('User not found');
-        }
-        console.log('User data retrieved:', data);
-        res.json(data);
-    } catch (error) {
-        console.error('Database query error:', error);
-        res.status(500).send('Internal Server Error');
-    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new FireModel({ name, username, password: hashedPassword, freefireid });
+    await newUser.save();
+    
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
-app.listen(3001, ()=> {
-    console.log(("server is running"));
-})
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    const user = await FireModel.findOne({ username });
+    if (!user) {
+      return res.status(404).json("No record exists");
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(401).json("The password is incorrect");
+    }
+
+    const token = jwt.sign({ username }, secret, { expiresIn: '1d' });
+    res.cookie('token', token, { httpOnly: true, secure: true, sameSite: 'None', maxAge: 24 * 60 * 60 * 1000 });
+
+    res.json("success");
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/payment", async (req, res) => {
+  try {
+    const registration = await FireModels.create(req.body);
+    res.status(201).json(registration);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get('/api/items', async (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(400).send('Token not found');
+  }
+
+  try {
+    const decoded = jwt.verify(token, secret);
+    const data = await FireModels.find({ username: decoded.username });
+
+    if (!data) {
+      return res.status(404).send('User not found');
+    }
+
+    res.json(data);
+  } catch (error) {
+    res.status(500).send('Internal Server Error');
+  }
+});
+
+app.listen(3001, () => {
+  console.log("Server is running on port 3001");
+});
