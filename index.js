@@ -85,13 +85,29 @@ app.get('/api/items', async (req, res) => {
     console.log('Request received to /api/items');
     console.log('Cookie:', cook);
 
-    if (!cook) {
-        console.log('No username cookie found');
-        return res.status(400).send('Username cookie not found');
-    }
 
     try {
         const data = await FireModel.find({ username: cook });
+        if (!data) {
+            console.log('User not found in the database');
+            return res.status(404).send('User not found');
+        }
+        console.log('User data retrieved:', data);
+        res.json(data);
+    } catch (error) {
+        console.error('Database query error:', error);
+        res.status(500).send('Internal Server Error');
+    }
+});
+app.get('/items', async (req, res) => {
+    const cook = req.cookies.username;
+
+    console.log('Request received to /api/items');
+    console.log('Cookie:', cook);
+
+
+    try {
+        const data = await FireModels.find({ username: cook });
         if (!data) {
             console.log('User not found in the database');
             return res.status(404).send('User not found');
