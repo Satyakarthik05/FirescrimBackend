@@ -25,12 +25,9 @@ app.options('*', cors(corsOptions));
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const secret = process.env.JWT_SECRET || "defaultSecret";
-const mongoURI = process.env.MONGO_URI;
+const secret = "Satya12@";
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("Connected to MongoDB"))
-  .catch(err => console.error("Could not connect to MongoDB", err));
+mongoose.connect("mongodb+srv://satyakarthikvelivela:firescrim123@firescrim.wxzexrz.mongodb.net/registration?retryWrites=true&w=majority&appName=Firescrim");
 
 app.post('/register', async (req, res) => {
   const { name, username, password, freefireid } = req.body;
