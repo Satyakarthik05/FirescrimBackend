@@ -50,7 +50,7 @@ app.post("/login", (req,res)=> {
     .then (user => {
         if(user){
             if(user.password === password ){
-                res.cookie('username', username ,{maxAge:24*60*60*1000 });
+                res.cookie('username', username ,{ httpOnly: true, secure: true, sameSite: 'None' ,maxAge:24*60*60*1000 });
                 const free = user.freefireid
                 console.log(free)
                 res.cookie('freefireid', free ,{maxAge:24*60*60*1000 });
