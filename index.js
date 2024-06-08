@@ -12,7 +12,7 @@ import { FireModels } from "./models/user.js";
 
 const app =express()
 const corsOptions = {
-  origin: [ 'https://firescrim.vercel.app','https://firescrim-frontend.vercel.app',"http://localhost:5173","http://localhost:5174","https://firescrim.netlify.app","https://test-umber-kappa-75.vercel.app"], // or use '*' to allow all origins
+  origin: [ 'https://firescrim.vercel.app','https://firescrim-frontend.vercel.app',"http://localhost:5173","http://localhost:5174","https://firescrim.netlify.app","https://test-umber-kappa-75.vercel.app","https://fire-tau-lac.vercel.app"], // or use '*' to allow all origins
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials:true,
