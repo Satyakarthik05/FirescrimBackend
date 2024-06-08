@@ -84,7 +84,7 @@ app.get('/api/items', async (req, res) => {
 
     console.log('Request received to /api/items');
     console.log('Cookie:', cook);
-    
+
     if (!cook) {
         console.log('No username cookie found');
         return res.status(400).send('Username cookie not found');
@@ -99,11 +99,10 @@ app.get('/api/items', async (req, res) => {
         console.log('User data retrieved:', data);
         res.json(data);
     } catch (error) {
-        console.error('Database query error:', error);  // Log the error for debugging
+        console.error('Database query error:', error);
         res.status(500).send('Internal Server Error');
     }
 });
-
 
 app.listen(3001, ()=> {
     console.log(("server is running"));
