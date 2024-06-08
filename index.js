@@ -91,7 +91,7 @@ app.get('/api/items', async (req, res) => {
     }
 
     try {
-        const data = await FireModels.find({ username: cook });
+        const data = await FireModel.find({ username: cook });
         if (!data) {
             console.log('User not found in the database');
             return res.status(404).send('User not found');
