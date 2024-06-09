@@ -16,7 +16,8 @@ const FireSchemas = new mongoose.Schema({
     username:String,
     freefireid:String,
     upiid:String,
-    status:String
+    status:String,
+    phoneno:String
 })
 
 export const FireModels = mongoose.model("Transactions", FireSchemas)
