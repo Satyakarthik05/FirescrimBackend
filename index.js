@@ -29,7 +29,7 @@ mongoose.connect("mongodb+srv://satyakarthikvelivela:firescrim123@firescrim.wxze
 
 
 app.post('/register', (req,res)=> {
-    const {name,username,password,freefireid} =req.body;
+    const {name,username,password,freefireid,phoneno} =req.body;
     const  user = FireModel.findOne({username:username})
 
     .then(user => {
@@ -73,7 +73,7 @@ app.post("/login", (req,res)=> {
 
 
 app.post("/payment" ,(req,res) => {
-    const {username,freefireid,upiid,status} =req.body;
+    const {username,freefireid,upiid,status,phoneno} =req.body;
 
     FireModels.create(req.body)
     .then (registration => res.json(registration))
