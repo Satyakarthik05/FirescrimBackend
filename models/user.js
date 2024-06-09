@@ -5,7 +5,8 @@ const FireSchema = new mongoose.Schema({
     name:String,
     username:String,
     password:String,
-    freefireid:String
+    freefireid:String,
+    phoneno:String
 })
 
 export const FireModel = mongoose.model("Signup", FireSchema)
