@@ -52,9 +52,9 @@ app.post("/login", (req,res)=> {
             if(user.password === password ){
                 res.cookie('username', username ,{ httpOnly: true, sameSite: 'None',secure:true ,maxAge:24*60*60*1000 });
                 const free = user.freefireid
-                console.log(free)
+                // console.log(free)
                 res.cookie('freefireid', free ,{ httpOnly: true, sameSite: 'None' ,secure:true,maxAge:24*60*60*1000 });
-                console.log(req.cookies.username)
+                // console.log(req.cookies.username)
                 res.json("success")
                 
             }
@@ -84,20 +84,20 @@ app.post("/payment" ,(req,res) => {
 app.get('/api/items', async (req, res) => {
     const cook = req.cookies.username;
 
-    console.log('Request received to /api/items');
-    console.log('Cookie:', cook);
+    // console.log('Request received to /api/items');
+    // console.log('Cookie:', cook);
 
 
     try {
         const data = await FireModel.find({ username: cook });
         if (!data) {
-            console.log('User not found in the database');
+            // console.log('User not found in the database');
             return res.status(404).send('User not found');
         }
-        console.log('User data retrieved:', data);
+        // console.log('User data retrieved:', data);
         res.json(data);
     } catch (error) {
-        console.error('Database query error:', error);
+        // console.error('Database query error:', error);
         res.status(500).send('Internal Server Error');
     }
 });
@@ -106,19 +106,19 @@ app.get('/api/items', async (req, res) => {
 app.get('/items', async (req, res) => {
     const cooks = req.cookies.username;
 
-    console.log('Cookie:', cooks);
+    // console.log('Cookie:', cooks);
 
 
     try {
         const data = await FireModels.find({ username: cooks });
         if (!data) {
-            console.log('User not found in the database');
+            // console.log('User not found in the database');
             return res.status(404).send('User not found');
         }
-        console.log('User data retrieved:', data);
+        // console.log('User data retrieved:', data);
         res.json(data);
     } catch (error) {
-        console.error('Database query error:', error);
+        // console.error('Database query error:', error);
         res.status(500).send('Internal Server Error');
     }
 });
