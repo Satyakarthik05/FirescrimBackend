@@ -102,6 +102,22 @@ app.get('/api/items', async (req, res) => {
     }
 });
 
+app.put('/profile/:username', async (req, res) => {
+    const { username } = req.params;
+    const { name, freefireid, phoneno } = req.body;
+
+    try {
+        const user = await FireModel.findOneAndUpdate(
+            { username: username },
+            { name, freefireid, phoneno },
+            { new: true }
+        );
+        res.json(user);
+    } catch (error) {
+        res.status(500).send('Server error');
+    }
+});
+
 
 app.get('/items', async (req, res) => {
     const cooks = req.cookies.username;
