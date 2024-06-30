@@ -73,7 +73,7 @@ app.post("/login", (req,res)=> {
 
 
 app.post("/payment" ,(req,res) => {
-    const {username,freefireid,upiid,status} =req.body;
+    const {username,freefireid,upiid,phoneno,status} =req.body;
     const  user = FireModels.findOne({upiid:upiid})
 
     .then(user => {
