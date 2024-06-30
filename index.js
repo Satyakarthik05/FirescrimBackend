@@ -73,11 +73,20 @@ app.post("/login", (req,res)=> {
 
 
 app.post("/payment" ,(req,res) => {
-    const {username,freefireid,upiid,status,phoneno} =req.body;
+    const {username,freefireid,upiid,status} =req.body;
+    const  user = FireModels.findOne({upiid:upiid})
 
-    FireModels.create(req.body)
-    .then (registration => res.json(registration))
-    .catch(err => res.json(err))
+    .then(user => {
+        if(user){
+            res.json("The upiid already exists")
+        }
+        else{
+            FireModels.create(req.body)
+            .then (registration => res.json(registration))
+            .catch(err => res.json(err)) 
+        }
+    })
+
 })
 
 
