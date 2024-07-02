@@ -105,6 +105,19 @@ app.post("/paymentsquad" ,(req,res) => {
     })
 
 })
+app.post("/payments" ,(req,res) => {
+    const {username,freefireid,upiid,phoneno,status} =req.body;
+    // const  user = FireModelss.findOne({upiid:upiid})
+  try{
+    FireModelss.create(req.body)
+    .then (registration => res.json(registration))
+    .catch(err => res.json(err)) 
+  }catch (error) {
+        // console.error('Database query error:', error);
+        res.status(500).send('Internal Server Error');
+    }
+
+})
 
 
 app.get('/api/items', async (req, res) => {
