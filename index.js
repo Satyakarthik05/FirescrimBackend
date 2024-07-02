@@ -89,6 +89,23 @@ app.post("/payment" ,(req,res) => {
 
 })
 
+app.post("/paymentsquad" ,(req,res) => {
+    const {username,freefireid,upiid,phoneno,status} =req.body;
+    const  user = FireModelss.findOne({upiid:upiid})
+
+    .then(user => {
+        if(user){
+            res.json("The upiid already exists")
+        }
+        else{
+            FireModelss.create(req.body)
+            .then (registration => res.json(registration))
+            .catch(err => res.json(err)) 
+        }
+    })
+
+})
+
 
 app.get('/api/items', async (req, res) => {
     const cook = req.cookies.username;
