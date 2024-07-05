@@ -9,6 +9,7 @@ import bodyParser from "body-parser";
 import {FireModel} from "./models/user.js"
 import { FireModels } from "./models/user.js";
 import { FireModelss } from "./models/user.js";
+import { FireModelsss } from "./models/user.js";
 
 
 const app =express()
@@ -173,6 +174,23 @@ app.get('/squad', async (req, res) => {
 
     try {
         const data = await FireModelss.find({ username: cooks });
+        if (!data) {
+            return res.status(404).send('User not found');
+        }
+        res.json(data);
+    } catch (error) {
+        res.status(500).send('Internal Server Error');
+    }
+});
+
+app.get('/duo', async (req, res) => {
+    const cooks = req.cookies.username;
+
+    // console.log('Cookie:', cooks);
+
+
+    try {
+        const data = await FireModelsss.find({ username: cooks });
         if (!data) {
             return res.status(404).send('User not found');
         }

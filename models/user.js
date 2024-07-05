@@ -32,3 +32,14 @@ const  FireSchemass = new mongoose.Schema({
 })
 
 export const FireModelss = mongoose.model("Squadpayment", FireSchemass)
+
+
+const  FireSchemasss = new mongoose.Schema({
+    username:String,
+    freefireid:String,
+    upiid:String,
+    status:String,
+    phoneno:String
+})
+
+export const FireModelsss = mongoose.model("Duopayment", FireSchemass)
