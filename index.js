@@ -107,6 +107,22 @@ app.post("/payments",(req,res) => {
     })
 
 })
+app.post("/paymentduo",(req,res) => {
+    const {username,freefireid,upiid,phoneno,status} =req.body;
+    const  user = FireModelsss.findOne({upiid:upiid})
+
+    .then(user => {
+        if(user){
+            res.json("The upiid already exists")
+        }
+        else{
+            FireModelsss.create(req.body)
+            .then (registration => res.json(registration))
+            .catch(err => res.json(err)) 
+        }
+    })
+
+})
 
 
 app.get('/api/items', async (req, res) => {
